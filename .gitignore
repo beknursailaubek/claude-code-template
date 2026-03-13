@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+vendor/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Build output
+dist/
+build/
+out/
+*.egg-info/
+.next/
+.nuxt/
+
+# Environment files — never commit secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+.pytest_cache/
+.nyc_output/
+
+# OS artifacts
+.DS_Store
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.orig
+
+# Claude memory session logs (keep memory/ dir, ignore session artifacts)
+.claude/sessions/
