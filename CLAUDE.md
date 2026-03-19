@@ -28,6 +28,7 @@ Team:         {{TEAM}}
 
 ## Rules
 
+@.claude/rules/core-behavior.md
 @.claude/rules/commits.md
 @.claude/rules/testing.md
 @.claude/rules/security.md
