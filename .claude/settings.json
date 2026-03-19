@@ -1,4 +1,10 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "effortLevel": "high",
+  "language": "ru",
   "permissions": {
     "allow": [
       "Bash(git status)",
