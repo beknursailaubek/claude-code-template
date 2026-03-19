@@ -38,13 +38,3 @@ If code changes affect:
 - Architecture-level components → update docs/workflow.md if necessary
 
 Use the `documentation-sync` skill for systematic doc updates.
-
-## Risk Reporting
-For any task that involves:
-- Changing a public API or interface
-- Touching authentication, authorization, or security logic
-- Modifying database schema or migrations
-- Changing infrastructure or deployment configuration
-- Deleting or renaming important files
-
-Stop and state the risk explicitly before proceeding. Ask for confirmation if the risk is non-trivial.

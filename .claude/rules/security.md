@@ -21,3 +21,13 @@ description: Security guardrails and destructive operation policy
 - Never apply a migration without explicit user confirmation
 - Always write reversible migrations (with `down` path)
 - Use `db-migration-safety` skill for any migration work
+
+## Risk Reporting
+For any task that involves:
+- Changing a public API or interface
+- Touching authentication, authorization, or security logic
+- Modifying database schema or migrations
+- Changing infrastructure or deployment configuration
+- Deleting or renaming important files
+
+Stop and state the risk explicitly before proceeding. Ask for confirmation if the risk is non-trivial.
