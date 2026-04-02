@@ -122,6 +122,29 @@
           }
         ]
       }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f .claude/session-memory.md ]; then echo 'Session memory available at .claude/session-memory.md — review after compaction.'; fi; exit 0",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "INPUT=$(cat); EXIT_CODE=$(echo \"$INPUT\" | jq -r '.tool_result.exit_code // empty'); CMD=$(echo \"$INPUT\" | jq -r '.tool_input.command // empty'); if [ -n \"$EXIT_CODE\" ] && [ \"$EXIT_CODE\" != \"0\" ]; then echo \"[$(date +%H:%M)] Command failed (exit $EXIT_CODE): $CMD\" >> /tmp/claude-failures.log 2>/dev/null; fi; exit 0",
+            "timeout": 3
+          }
+        ]
+      }
     ]
   }
 }

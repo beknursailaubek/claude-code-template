@@ -1,0 +1,23 @@
+{
+  "_comment": "Project keybindings template. Copy to ~/.claude/keybindings.json for global use.",
+  "bindings": [
+    {
+      "key": "ctrl+shift+r",
+      "command": "command:code-review",
+      "context": "Chat",
+      "description": "Run code review"
+    },
+    {
+      "key": "ctrl+shift+d",
+      "command": "command:doctor",
+      "context": "Chat",
+      "description": "Run doctor diagnostics"
+    },
+    {
+      "key": "ctrl+shift+t",
+      "command": "command:batch-workflow",
+      "context": "Chat",
+      "description": "Start batch workflow"
+    }
+  ]
+}

@@ -82,28 +82,42 @@ This template solves that with clear rules, specialized subagents, and repeatabl
 │  │  ├─ api-contracts.md           ← OpenAPI-first, breaking change policy
 │  │  └─ stack.md                   ← package manager, language, DB (filled at bootstrap)
 │  ├─ agents/
-│  │  ├─ architect.md
-│  │  ├─ reviewer.md
-│  │  ├─ backend-implementer.md
-│  │  ├─ frontend-implementer.md
-│  │  ├─ test-engineer.md
-│  │  └─ migration-operator.md
+│  │  ├─ architect.md               ← system design, trade-off analysis
+│  │  ├─ reviewer.md                ← code review, policy enforcement
+│  │  ├─ backend-implementer.md     ← scoped backend tasks
+│  │  ├─ frontend-implementer.md    ← scoped frontend/UI tasks
+│  │  ├─ test-engineer.md           ← test planning and implementation
+│  │  ├─ migration-operator.md      ← DB migration safety
+│  │  ├─ verification.md            ← adversarial testing, proves code works ★
+│  │  └─ coordinator.md             ← multi-agent task orchestration ★
 │  ├─ skills/
-│  │  ├─ feature-delivery/SKILL.md
-│  │  ├─ bugfix-workflow/SKILL.md
-│  │  ├─ code-review/SKILL.md
-│  │  ├─ db-migration-safety/SKILL.md
-│  │  ├─ api-docs/SKILL.md
-│  │  ├─ project-bootstrap/SKILL.md
-│  │  ├─ upgrade-template/SKILL.md
-│  │  └─ documentation-sync/SKILL.md
+│  │  ├─ feature-delivery/          ← end-to-end feature workflow
+│  │  ├─ bugfix-workflow/           ← structured bug diagnosis
+│  │  ├─ code-review/              ← consistent review process
+│  │  ├─ db-migration-safety/      ← safe migration workflow
+│  │  ├─ api-docs/                 ← Swagger/OpenAPI sync
+│  │  ├─ project-bootstrap/        ← first-session setup
+│  │  ├─ upgrade-template/         ← upgrade existing projects
+│  │  ├─ documentation-sync/       ← keep docs in sync
+│  │  ├─ batch-workflow/           ← parallel large-scale changes ★
+│  │  ├─ doctor/                   ← environment diagnostics ★
+│  │  ├─ session-memory/           ← live session tracking ★
+│  │  └─ memory-consolidation/     ← prune and merge memories ★
+│  ├─ output-styles/                ← switchable response modes ★
+│  │  ├─ default.md                ← concise, action-oriented
+│  │  ├─ performance-focused.md    ← performance analysis mode
+│  │  └─ security-audit.md         ← security-first review mode
+│  ├─ keybindings.json             ← keyboard shortcut template ★
 │  └─ hooks/
 │     ├─ README.md
 │     ├─ pre-tool-use.sh            ← blocks rm -rf, force push, DROP TABLE
 │     ├─ post-edit-lint.sh          ← auto-lints edited files (eslint/ruff/gofmt)
 │     ├─ protect-files.sh           ← blocks editing .env, lock files, dist/
 │     └─ session-report.sh          ← prints branch + diff stats on session end
-└─ memory/                          ← individual memory files (auto-managed)
+├─ memory/                          ← individual memory files (auto-managed)
+│  └─ team/                         ← shared team memories ★
+└─ docs/
+   └─ team-memory.md               ← team memory guide ★
 ```
 
 ---
@@ -144,8 +158,11 @@ Begin subsequent sessions with:
 | New feature | [feature-delivery](.claude/skills/feature-delivery/SKILL.md) | [workflow.md](docs/workflow.md) |
 | Bug fix | [bugfix-workflow](.claude/skills/bugfix-workflow/SKILL.md) | [workflow.md](docs/workflow.md) |
 | Code review | [code-review](.claude/skills/code-review/SKILL.md) | [agent-routing.md](docs/agent-routing.md) |
+| Large refactor | [batch-workflow](.claude/skills/batch-workflow/SKILL.md) | — |
 | DB migration | [db-migration-safety](.claude/skills/db-migration-safety/SKILL.md) | — |
 | API docs | [api-docs](.claude/skills/api-docs/SKILL.md) | — |
+| Diagnostics | [doctor](.claude/skills/doctor/SKILL.md) | — |
+| Memory cleanup | [memory-consolidation](.claude/skills/memory-consolidation/SKILL.md) | — |
 
 For the full task processing model and routing decision tree, see [docs/workflow.md](docs/workflow.md).
 
@@ -163,6 +180,8 @@ Subagents are specialized Claude instances with narrowly defined roles. They are
 | `frontend-implementer` | Scoped frontend/UI implementation tasks |
 | `test-engineer` | Test planning and implementation |
 | `migration-operator` | Database and schema migration safety |
+| `verification` | Adversarial testing — proves code works by running it |
+| `coordinator` | Multi-agent task orchestration for complex features |
 
 See [docs/agent-routing.md](docs/agent-routing.md) for routing rules.
 
@@ -177,11 +196,29 @@ Skills are workflow playbooks invoked with `/skill-name` or via the `Skill` tool
 | `feature-delivery` | End-to-end flow for shipping a feature |
 | `bugfix-workflow` | Structured approach to diagnosing and fixing bugs |
 | `code-review` | Consistent review process (isolated subagent) |
+| `batch-workflow` | Parallel large-scale changes with isolated agents |
 | `db-migration-safety` | Safe database migration workflow |
 | `api-docs` | Keep Swagger/OpenAPI spec in sync with endpoints |
+| `doctor` | Diagnose project environment and configuration |
+| `session-memory` | Track live session progress in real-time |
+| `memory-consolidation` | Prune, merge, and consolidate stale memories |
 | `project-bootstrap` | Initialize a new project from this template |
 | `upgrade-template` | Bring an existing project up to the current template |
 | `documentation-sync` | Keep docs in sync with code changes |
+
+---
+
+## Output Styles
+
+Switchable response modes that change how Claude approaches tasks:
+
+| Style | Purpose |
+|---|---|
+| `default` | Concise, action-oriented (always active) |
+| `performance-focused` | Every suggestion evaluated for performance impact |
+| `security-audit` | Security-first review with OWASP classification |
+
+Styles live in `.claude/output-styles/`. Create custom styles for your domain.
 
 ---
 
@@ -226,6 +263,20 @@ Lifecycle hooks run automatically to enforce safety and quality:
 
 ---
 
+## Team Memory
+
+Shared project knowledge across team members. Individual memories in `memory/`, team memories in `memory/team/`.
+
+See [docs/team-memory.md](docs/team-memory.md) for security considerations and usage guide.
+
+---
+
+## Keybindings
+
+Template includes `.claude/keybindings.json` with shortcuts for common commands. Copy to `~/.claude/keybindings.json` for global use.
+
+---
+
 ## Memory System
 
 `MEMORY.md` is the index of accumulated project learnings. Individual memory files live in `memory/`.
@@ -255,4 +306,4 @@ If you discover a pattern, guardrail, or workflow that should be in the template
 
 ---
 
-*Template version: 3.0.0 — 2026-04-02*
+*Template version: 3.1.0 — 2026-04-02*
