@@ -74,20 +74,25 @@ grep -r "{{" . --include="*.md" --include="*.json" -l
 | `{{TEST_COMMAND}}` | infer (e.g., `yarn test`, `pytest`) |
 | `{{BUILD_COMMAND}}` | infer or `N/A` |
 
-### Step 5 — Create `.mcp.json`
-If `.mcp.json` already exists, read it and add the `codex` entry only if it is not already present.
-If it does not exist, create it:
+### Step 5 — Configure MCP Servers
+Create or update `.mcp.json` based on the project's needs:
+
 ```json
 {
   "mcpServers": {
-    "codex": {
-      "command": "codex",
-      "args": ["mcp"],
-      "env": {}
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-postgres"],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
     }
   }
 }
 ```
+
+If the project uses PostgreSQL, add the `postgres` MCP server.
+If other MCP servers are needed (Redis, external APIs), add them with appropriate transport types (stdio, sse, http).
 
 ### Step 6 — Prune Irrelevant Agents
 - "Does this project have a frontend?" If no → `rm .claude/agents/frontend-implementer.md`

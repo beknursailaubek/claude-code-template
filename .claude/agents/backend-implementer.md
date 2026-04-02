@@ -45,5 +45,4 @@ Execute a well-specified backend implementation task with minimal surface area. 
 5. **Deviations from plan** — if any, with justification
 
 ## Skills to Use
-- `codex-task-contract` — when delegating a sub-task to Codex
 - `documentation-sync` — when a public interface changed

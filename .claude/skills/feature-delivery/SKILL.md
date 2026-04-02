@@ -42,14 +42,14 @@ Use this skill at the start of any feature request to ensure nothing is skipped.
 - Get confirmation before proceeding to implementation.
 
 ### Step 4 — Decompose into Tasks
-Break the feature into bounded subtasks, each suitable for a single agent or Codex invocation:
+Break the feature into bounded subtasks, each suitable for a subagent:
 - Each task has: a clear objective, specific input files, expected output files, and acceptance criteria.
 - Order tasks to minimize dependencies and enable incremental testing.
 
 ### Step 5 — Implement
 - For each subtask, choose the right executor:
-  - Backend logic → `backend-implementer` agent or Codex via `codex-task-contract`
-  - Frontend/UI → `frontend-implementer` agent or Codex
+  - Backend logic → `backend-implementer` subagent
+  - Frontend/UI → `frontend-implementer` subagent
   - Tests → `test-engineer` agent
   - Migrations → `migration-operator` agent (with confirmation)
 - Review each output before moving to the next task.

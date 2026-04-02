@@ -18,7 +18,6 @@ Act as the quality gate. Inspect diffs and outputs critically, classify issues b
 - Approve or request changes with specific instructions
 
 ## When to Use
-- After any Codex task returns output
 - After implementation by any subagent
 - For pull request reviews
 - For auditing a batch of changes before committing

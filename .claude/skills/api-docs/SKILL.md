@@ -14,7 +14,7 @@ The spec is the contract — it must reflect reality, not aspirations.
 - Changing a request or response shape
 - Changing authentication/authorization on an endpoint
 - Deprecating or removing an endpoint
-- Before writing a codex-task-contract that includes API work
+- Before delegating API implementation to a subagent
 
 ## Spec Location
 Default: `docs/swagger.yaml`
@@ -103,7 +103,7 @@ When documenting a new endpoint, produce this before implementation:
         description: Unauthorized
 ```
 
-Write the spec entry **before** delegating implementation to Codex or a subagent.
+Write the spec entry **before** delegating implementation to a subagent.
 The spec is the acceptance criterion for the implementation.
 
 ---

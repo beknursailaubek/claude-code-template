@@ -10,7 +10,7 @@ context: fork
 Provide a consistent, actionable review of code changes. Catch correctness issues, security risks, policy violations, and quality regressions before they merge.
 
 ## When to Use
-- Reviewing a completed implementation from an agent or Codex
+- Reviewing a completed implementation from a subagent
 - Reviewing a pull request
 - Auditing a batch of changes before committing
 - Performing a pre-merge quality check

@@ -46,5 +46,4 @@ Execute a well-specified frontend implementation task. Produce correct, accessib
 6. **Deviations from plan** — if any, with justification
 
 ## Skills to Use
-- `codex-task-contract` — when delegating a sub-task to Codex
 - `documentation-sync` — when a new component's API/props changed

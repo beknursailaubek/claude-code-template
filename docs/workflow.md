@@ -24,7 +24,7 @@ Classify: complexity and routing decision
     │
     ├── Multi-module or interface-changing → Architect agent first
     │
-    ├── Bounded implementation → Implementer agent or Codex
+    ├── Bounded implementation → Implementer subagent
     │
     └── Review / audit → Reviewer agent
          │
@@ -40,7 +40,7 @@ Classify: complexity and routing decision
 
 ---
 
-## Decision: Keep in Claude vs. Route to Subagent vs. Delegate to Codex
+## Decision: Keep in Claude vs. Route to Subagent
 
 ### Keep in Claude (handle directly)
 Use when:
@@ -69,32 +69,6 @@ Examples:
 
 See [agent-routing.md](agent-routing.md) for the full routing matrix.
 
-### Delegate to Codex via MCP
-Use when:
-- The task is implementation work (writing/editing code)
-- The task is bounded to specific files
-- The plan and acceptance criteria are already clear
-- The task requires no cross-module reasoning
-
-Always use the `codex-task-contract` skill before calling Codex.
-See [codex-mcp-policy.md](codex-mcp-policy.md) for full rules.
-
----
-
-## Reintegrating Codex Output
-
-After Codex returns:
-
-1. **Read the diff** — every changed file, not just the summary
-2. **Check against acceptance criteria** — each criterion must be verifiable
-3. **Run validation commands** — do not skip
-4. **Accept or reject** — never auto-accept
-   - If output is correct: proceed to review
-   - If output is partially wrong: prepare a corrective contract with specific fix instructions
-   - If output is entirely wrong: consider whether the contract was underspecified
-
-Do not accept output you haven't read.
-
 ---
 
 ## Validation Sequence
@@ -108,6 +82,15 @@ Always run in this order:
 5. **Migrations** — only when relevant, always with explicit confirmation
 
 If any step fails: fix before proceeding. Do not skip steps.
+
+---
+
+## MCP Server Usage
+
+When `.mcp.json` is configured:
+- Use `postgres` MCP for database queries instead of raw psql/SQL in bash
+- Use configured HTTP/SSE servers for external API interactions
+- Check available tools at session start: review `.mcp.json` configuration
 
 ---
 
@@ -132,6 +115,7 @@ At the start of every session:
 1. Read `CLAUDE.md`
 2. Read `MEMORY.md` (index) and any memory files relevant to today's task
 3. Check `git status` and `git log --oneline -10`
-4. Then proceed
+4. Check `.mcp.json` for available MCP servers
+5. Then proceed
 
 Skipping this leads to repeated context-setting and preventable mistakes.

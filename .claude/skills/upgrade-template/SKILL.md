@@ -58,7 +58,6 @@ skills = {
   'code-review': ['context'],
   'bugfix-workflow': ['context', 'allowed-tools'],
   'feature-delivery': ['allowed-tools'],
-  'codex-task-contract': ['user-invocable'],
 }
 for skill, keys in skills.items():
     path = f'.claude/skills/{skill}/SKILL.md'

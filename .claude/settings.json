@@ -4,22 +4,124 @@
   "language": "ru",
   "permissions": {
     "allow": [
-      "Bash(git status)", "Bash(git log*)", "Bash(git diff*)", "Bash(git show*)"
+      "Bash(git status)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git branch*)",
+      "Bash(npm run lint*)",
+      "Bash(npm test*)",
+      "Bash(npm run build*)",
+      "Bash(yarn lint*)",
+      "Bash(yarn test*)",
+      "Bash(yarn build*)",
+      "Bash(npx prettier*)",
+      "Read",
+      "Glob",
+      "Grep"
     ],
     "deny": [
-      "Bash(git push --force*)", "Bash(git push -f *)",
-      "Bash(git reset --hard*)", "Bash(git clean -f *)", "Bash(rm -rf *)"
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f *)",
+      "Bash(rm -rf *)"
     ]
   },
   "hooks": {
     "PreToolUse": [
-      { "matcher": "Bash", "hooks": [{ "type": "command", "command": ".claude/hooks/pre-tool-use.sh" }] }
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-tool-use.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/protect-files.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ],
     "PostToolUse": [
-      { "matcher": "Edit|Write", "hooks": [{ "type": "command", "command": ".claude/hooks/post-edit-lint.sh" }] }
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-edit-lint.sh",
+            "if": "Edit(*.ts)|Edit(*.tsx)|Edit(*.js)|Edit(*.jsx)|Write(*.ts)|Write(*.tsx)|Write(*.js)|Write(*.jsx)",
+            "timeout": 15,
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "prompt",
+            "if": "Bash(git commit *)",
+            "prompt": "Check commit message follows Conventional Commits with Russian description. Pattern: type(scope): описание. Types: feat, fix, refactor, chore, docs, test, perf, ci, style, build. If invalid, reject with explanation.",
+            "model": "haiku",
+            "timeout": 10,
+            "statusMessage": "Проверка формата коммита..."
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f package.json ] && [ ! -d node_modules ]; then echo 'WARNING: node_modules не найден. Запустите npm install.' >&2; fi; exit 0",
+            "timeout": 3,
+            "once": true
+          }
+        ]
+      }
     ],
     "Stop": [
-      { "hooks": [{ "type": "command", "command": ".claude/hooks/session-report.sh" }] }
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/session-report.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [ -f .claude/project-context.md ]; then cat .claude/project-context.md; fi; exit 0",
+            "timeout": 3,
+            "once": true
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Remember to preserve: current task context, decisions made, files modified, and any blockers.' && exit 0",
+            "timeout": 3
+          }
+        ]
+      }
     ]
   }
 }

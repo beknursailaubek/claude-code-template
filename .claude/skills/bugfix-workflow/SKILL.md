@@ -49,7 +49,7 @@ Use the `test-engineer` agent if the test is non-trivial.
 ### Step 4 — Prepare the Fix
 - Design the minimal change that addresses the root cause.
 - If the fix is straightforward: implement directly.
-- If the fix is complex or cross-module: use `codex-task-contract` skill to delegate.
+- If the fix is complex or cross-module: delegate to the appropriate implementer subagent.
 - Avoid fixing unrelated issues in the same change.
 
 ### Step 5 — Verify the Fix

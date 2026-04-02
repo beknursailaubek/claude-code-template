@@ -171,7 +171,6 @@ How to adapt this template for different project types.
 | bugfix-workflow | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | code-review | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | db-migration-safety | ✓* | — | ✓* | ✓* | ✓* | ✓* |
-| codex-task-contract | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | project-bootstrap | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | documentation-sync | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 

@@ -22,7 +22,7 @@ Design the solution before it is built. Produce clear, reviewable plans that imp
 - Any change to a public interface or data contract
 - Any new dependency being introduced
 - Designing a new service, worker, or integration
-- Before writing a Codex task contract for a complex feature
+- Before delegating a complex feature to implementer subagents
 
 ## What This Agent Must NOT Do
 - Write production code directly

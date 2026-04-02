@@ -137,18 +137,25 @@ Key question to answer: are there commands specific to your stack that should al
 
 ---
 
-## Step 8 — Verify the Codex MCP Connection
+## Step 8 — Configure MCP Servers
 
-In a Claude Code session:
+Review `.mcp.json` and configure MCP servers for your project:
+
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-postgres"],
+      "env": { "DATABASE_URL": "${DATABASE_URL}" }
+    }
+  }
+}
 ```
-Use the codex MCP tool to echo "hello world"
-```
 
-If it fails, check:
-- MCP server configuration in your Claude Code settings
-- Network/auth issues with the Codex endpoint
-
-If Codex is not available, the template still works — see the fallback policy in CLAUDE.md.
+Add servers relevant to your stack:
+- PostgreSQL → `@anthropic/mcp-postgres`
+- Other databases or APIs → configure with appropriate transport (stdio, sse, http)
 
 ---
 
@@ -170,7 +177,7 @@ Document the current baseline state in MEMORY.md:
 ## Step 10 — Commit the Bootstrap
 
 ```bash
-git add CLAUDE.md MEMORY.md .claude/ docs/ README.md .gitignore
+git add CLAUDE.md MEMORY.md .claude/ docs/ README.md .gitignore .mcp.json
 git commit -m "chore: initialize project from ai-project-template"
 ```
 
@@ -194,6 +201,6 @@ Claude will read the project constitution, check memory, and then apply the work
 - [ ] Irrelevant skills removed
 - [ ] Stack-specific conventions added to CLAUDE.md
 - [ ] Initial MEMORY.md entries written
-- [ ] Codex MCP connection verified (if using)
+- [ ] MCP servers configured in `.mcp.json`
 - [ ] Baseline validation run and documented
 - [ ] Initial commit created

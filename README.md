@@ -1,6 +1,6 @@
-# Claude + Codex Project Template
+# Claude Code Project Template
 
-A production-grade GitHub template repository that standardizes how **Claude Code** (orchestrator) and **Codex via MCP** (executor) are used together across software projects.
+A production-grade GitHub template repository that standardizes how **Claude Code** is used across software projects — with subagents, MCP servers, structured workflows, and quality gates.
 
 Use this as the starting point for every new project to get consistent workflows, agent roles, memory management, and quality gates from day one.
 
@@ -8,31 +8,33 @@ Use this as the starting point for every new project to get consistent workflows
 
 ## Why This Template Exists
 
-Working with AI agents without clear role separation leads to:
+Working with AI agents without structure leads to:
 - Unpredictable output quality
 - No accumulated project knowledge
 - Repeated context-setting across sessions
 - Conflation of architecture decisions with implementation details
 
-This template solves that by treating Claude Code and Codex as distinct roles with clear contracts between them.
+This template solves that with clear rules, specialized subagents, and repeatable workflows.
 
 ---
 
 ## Working Model
 
 ```
-┌─────────────────────────────────────────────┐
-│                 Claude Code                 │
-│  Orchestrator · Architect · Reviewer        │
-│  Plans · Decomposes · Reviews · Validates   │
-└────────────────────┬────────────────────────┘
-                     │ delegates bounded tasks
-                     ▼
-┌─────────────────────────────────────────────┐
-│              Codex via MCP                  │
-│  Executor · Code Generator · Refactorer     │
-│  Edits files · Runs commands · Writes tests │
-└─────────────────────────────────────────────┘
+┌──────────────────────────────────────────────┐
+│               Claude Code                    │
+│  Orchestrator · Architect · Reviewer         │
+│  Plans · Decomposes · Reviews · Validates    │
+└──────────────┬──────────────┬────────────────┘
+               │              │
+    delegates  │              │  queries
+    to agents  │              │  via MCP
+               ▼              ▼
+┌──────────────────┐  ┌───────────────────────┐
+│    Subagents     │  │     MCP Servers       │
+│  Specialized     │  │  postgres, APIs, etc. │
+│  implementation  │  │  Structured access    │
+└──────────────────┘  └───────────────────────┘
 ```
 
 **Claude Code** owns:
@@ -42,13 +44,16 @@ This template solves that by treating Claude Code and Codex as distinct roles wi
 - Risk identification and guardrails
 - Final review and acceptance gate
 
-**Codex via MCP** is limited to:
-- Implementing a well-scoped, pre-planned task
-- Refactoring within defined boundaries
-- Writing tests given a spec
-- Generating documentation for a narrow module
+**Subagents** handle:
+- Scoped implementation tasks (backend, frontend)
+- Test planning and implementation
+- Code review and audits
+- Database migration safety
 
-See [docs/codex-mcp-policy.md](docs/codex-mcp-policy.md) for the full delegation policy.
+**MCP Servers** provide:
+- Database access (queries, schema inspection)
+- External API integration
+- Structured tool access beyond bash
 
 ---
 
@@ -59,15 +64,16 @@ See [docs/codex-mcp-policy.md](docs/codex-mcp-policy.md) for the full delegation
 ├─ README.md                        ← you are here
 ├─ CLAUDE.md                        ← constitutional rules for Claude Code
 ├─ MEMORY.md                        ← accumulated project learnings (index)
+├─ .mcp.json                        ← MCP server configuration
 ├─ .gitignore
 ├─ docs/
 │  ├─ workflow.md                   ← task processing workflow
 │  ├─ agent-routing.md              ← which agent handles what
-│  ├─ codex-mcp-policy.md           ← Codex delegation rules
 │  ├─ project-bootstrap.md          ← first steps after using this template
-│  └─ template-customization.md     ← adapting for different project types
+│  ├─ template-customization.md     ← adapting for different project types
+│  └─ swagger.example.yaml          ← OpenAPI spec example
 ├─ .claude/
-│  ├─ settings.json                 ← Claude Code settings (attribution, effort, hooks, permissions)
+│  ├─ settings.json                 ← settings (attribution, effort, hooks, permissions)
 │  ├─ rules/                        ← modular rule files imported by CLAUDE.md
 │  │  ├─ core-behavior.md           ← read-before-edit, minimal diffs, no speculation
 │  │  ├─ commits.md                 ← Conventional Commits, no Co-Authored-By
@@ -88,7 +94,6 @@ See [docs/codex-mcp-policy.md](docs/codex-mcp-policy.md) for the full delegation
 │  │  ├─ code-review/SKILL.md
 │  │  ├─ db-migration-safety/SKILL.md
 │  │  ├─ api-docs/SKILL.md
-│  │  ├─ codex-task-contract/SKILL.md
 │  │  ├─ project-bootstrap/SKILL.md
 │  │  ├─ upgrade-template/SKILL.md
 │  │  └─ documentation-sync/SKILL.md
@@ -96,6 +101,7 @@ See [docs/codex-mcp-policy.md](docs/codex-mcp-policy.md) for the full delegation
 │     ├─ README.md
 │     ├─ pre-tool-use.sh            ← blocks rm -rf, force push, DROP TABLE
 │     ├─ post-edit-lint.sh          ← auto-lints edited files (eslint/ruff/gofmt)
+│     ├─ protect-files.sh           ← blocks editing .env, lock files, dist/
 │     └─ session-report.sh          ← prints branch + diff stats on session end
 └─ memory/                          ← individual memory files (auto-managed)
 ```
@@ -110,7 +116,7 @@ On GitHub: click **"Use this template"** → create your new repository.
 
 Or locally:
 ```bash
-git clone https://github.com/YOUR_ORG/ai-project-template my-new-project
+git clone https://github.com/beknursailaubek/claude-code-template my-new-project
 cd my-new-project
 rm -rf .git && git init
 ```
@@ -122,7 +128,7 @@ Open Claude Code and run:
 /project-bootstrap
 ```
 
-This skill auto-detects your package manager, asks stack questions one at a time, fills all `{{PLACEHOLDER}}` values, creates `.mcp.json`, prunes irrelevant agents, and commits the result.
+This skill auto-detects your package manager, asks stack questions one at a time, fills all `{{PLACEHOLDER}}` values, configures MCP servers, prunes irrelevant agents, and commits the result.
 
 ### 3. Start your first session
 
@@ -138,8 +144,8 @@ Begin subsequent sessions with:
 | New feature | [feature-delivery](.claude/skills/feature-delivery/SKILL.md) | [workflow.md](docs/workflow.md) |
 | Bug fix | [bugfix-workflow](.claude/skills/bugfix-workflow/SKILL.md) | [workflow.md](docs/workflow.md) |
 | Code review | [code-review](.claude/skills/code-review/SKILL.md) | [agent-routing.md](docs/agent-routing.md) |
-| Delegate to Codex | [codex-task-contract](.claude/skills/codex-task-contract/SKILL.md) | [codex-mcp-policy.md](docs/codex-mcp-policy.md) |
 | DB migration | [db-migration-safety](.claude/skills/db-migration-safety/SKILL.md) | — |
+| API docs | [api-docs](.claude/skills/api-docs/SKILL.md) | — |
 
 For the full task processing model and routing decision tree, see [docs/workflow.md](docs/workflow.md).
 
@@ -173,10 +179,50 @@ Skills are workflow playbooks invoked with `/skill-name` or via the `Skill` tool
 | `code-review` | Consistent review process (isolated subagent) |
 | `db-migration-safety` | Safe database migration workflow |
 | `api-docs` | Keep Swagger/OpenAPI spec in sync with endpoints |
-| `codex-task-contract` | Package a bounded task for Codex |
 | `project-bootstrap` | Initialize a new project from this template |
 | `upgrade-template` | Bring an existing project up to the current template |
 | `documentation-sync` | Keep docs in sync with code changes |
+
+---
+
+## MCP Servers
+
+The template includes `.mcp.json` for MCP server configuration. Default setup includes PostgreSQL MCP server.
+
+Available transport types:
+- **stdio** — local command-based servers (default)
+- **sse** — Server-Sent Events for remote servers
+- **http** — HTTP transport for remote APIs
+
+Configure in `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-postgres"],
+      "env": { "DATABASE_URL": "${DATABASE_URL}" }
+    }
+  }
+}
+```
+
+---
+
+## Hooks
+
+Lifecycle hooks run automatically to enforce safety and quality:
+
+| Hook | Event | Purpose |
+|---|---|---|
+| `pre-tool-use.sh` | PreToolUse (Bash) | Blocks destructive commands |
+| `protect-files.sh` | PreToolUse (Edit/Write) | Blocks editing protected files |
+| `post-edit-lint.sh` | PostToolUse (Edit/Write) | Auto-lints changed files |
+| Commit validator | PostToolUse (Bash) | Validates Conventional Commits format |
+| SessionStart | SessionStart | Checks node_modules presence |
+| UserPromptSubmit | UserPromptSubmit | Loads project context |
+| PreCompact | PreCompact | Preserves important context |
+| `session-report.sh` | Stop | Prints branch and diff stats |
 
 ---
 
@@ -209,4 +255,4 @@ If you discover a pattern, guardrail, or workflow that should be in the template
 
 ---
 
-*Template version: 2.0.0 — 2026-03-19*
+*Template version: 3.0.0 — 2026-04-02*
